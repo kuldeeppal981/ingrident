@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ScanWise - Ingredient Scanner</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 480px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+            position: relative;
+            box-shadow: 0 0 50px rgba(0,0,0,0.1);
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+        .profile-btn {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255,255,255,0.2);
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .profile-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 30px 20px;
+            padding-bottom: 100px;
+        }
+
+        /* Scan Section */
+        .scan-section {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .scan-area {
+            background: linear-gradient(135deg, #f8f9ff, #e8f0ff);
+            border: 3px dashed #4CAF50;
+            border-radius: 20px;
+            padding: 40px 20px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .scan-area:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(76, 175, 80, 0.2);
+            border-color: #45a049;
+        }
+
+        .scan-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            color: white;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .scan-text h3 {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .scan-text p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            margin-bottom: 40px;
+        }
+
+        .quick-actions h4 {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .action-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .action-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+
+        .action-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+            border-color: #4CAF50;
+        }
+
+        .action-icon {
+            width: 50px;
+            height: 50px;
+            margin: 0 auto 10px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        .action-card h5 {
+            font-size: 16px;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .action-card p {
+            font-size: 12px;
+            color: #666;
+        }
+
+        /* Recent Scans */
+        .recent-section {
+            margin-bottom: 30px;
+        }
+
+        .recent-section h4 {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .recent-item {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 10px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.06);
+            display: flex;
+            align-items: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .recent-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 25px rgba(0,0,0,0.1);
+        }
+
+        .recent-icon {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, #ff9a9e, #fecfef);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 20px;
+        }
+
+        .recent-info h6 {
+            font-size: 14px;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .recent-info p {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .safety-badge {
+            margin-left: auto;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .safe { background: #e8f5e8; color: #4CAF50; }
+        .warning { background: #fff3cd; color: #856404; }
+        .danger { background: #f8d7da; color: #721c24; }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            max-width: 480px;
+            width: 100%;
+            background: white;
+            border-top: 1px solid #eee;
+            display: flex;
+            padding: 15px 0;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.1);
+        }
+
+        .nav-item {
+            flex: 1;
+            text-align: center;
+            color: #999;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            padding: 5px;
+        }
+
+        .nav-item.active {
+            color: #4CAF50;
+        }
+
+        .nav-item:hover {
+            color: #4CAF50;
+            transform: scale(1.1);
+        }
+
+        .nav-icon {
+            font-size: 24px;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .nav-text {
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 400px;
+            width: 90%;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { transform: translate(-50%, -40%); opacity: 0; }
+            to { transform: translate(-50%, -50%); opacity: 1; }
+        }
+
+        .modal h3 {
+            margin-bottom: 20px;
+            text-align: center;
+            color: #333;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #999;
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #4CAF50;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Results View */
+        .results-view {
+            display: none;
+            padding: 20px;
+        }
+
+        .ingredient-item {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 10px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.06);
+            border-left: 4px solid #4CAF50;
+        }
+
+        .ingredient-item.warning {
+            border-left-color: #ff9800;
+        }
+
+        .ingredient-item.danger {
+            border-left-color: #f44336;
+        }
+
+        .ingredient-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .ingredient-desc {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .ingredient-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+
+        .tag {
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .tag.vegan { background: #e8f5e8; color: #4CAF50; }
+        .tag.allergen { background: #ffebee; color: #f44336; }
+        .tag.halal { background: #e3f2fd; color: #2196f3; }
+
+        @media (max-width: 480px) {
+            .container {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>ScanWise</h1>
+            <p>Smart Ingredient Analysis</p>
+            <button class="profile-btn" onclick="openProfile()">👤</button>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Scan Section -->
+            <div class="scan-section">
+                <div class="scan-area" onclick="document.getElementById('fileInput').click()">
+                    <div class="scan-icon">📷</div>
+                    <div class="scan-text">
+                        <h3>Scan Ingredient Label</h3>
+                        <p>Take a photo or upload an image to analyze ingredients</p>
+                    </div>
+                </div>
+                <input type="file" id="fileInput" class="file-input" accept="image/*" onchange="handleFileUpload(event)">
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="quick-actions">
+                <h4>Quick Actions</h4>
+                <div class="action-grid">
+                    <div class="action-card" onclick="openHistory()">
+                        <div class="action-icon">📊</div>
+                        <h5>Scan History</h5>
+                        <p>View past analyses</p>
+                    </div>
+                    <div class="action-card" onclick="openProfile()">
+                        <div class="action-icon">⚙️</div>
+                        <h5>Preferences</h5>
+                        <p>Dietary settings</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Scans -->
+            <div class="recent-section">
+                <h4>Recent Scans</h4>
+                <div class="recent-item" onclick="viewScanDetails('cereal')">
+                    <div class="recent-icon">🥣</div>
+                    <div class="recent-info">
+                        <h6>Breakfast Cereal</h6>
+                        <p>2 hours ago • 12 ingredients</p>
+                    </div>
+                    <span class="safety-badge safe">Safe</span>
+                </div>
+                <div class="recent-item" onclick="viewScanDetails('chips')">
+                    <div class="recent-icon">🍟</div>
+                    <div class="recent-info">
+                        <h6>Potato Chips</h6>
+                        <p>Yesterday • 8 ingredients</p>
+                    </div>
+                    <span class="safety-badge warning">Caution</span>
+                </div>
+                <div class="recent-item" onclick="viewScanDetails('yogurt')">
+                    <div class="recent-icon">🥛</div>
+                    <div class="recent-info">
+                        <h6>Greek Yogurt</h6>
+                        <p>2 days ago • 6 ingredients</p>
+                    </div>
+                    <span class="safety-badge safe">Safe</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Navigation -->
+        <div class="bottom-nav">
+            <a href="#" class="nav-item active">
+                <span class="nav-icon">🏠</span>
+                <span class="nav-text">Home</span>
+            </a>
+            <a href="#" class="nav-item" onclick="openScanner()">
+                <span class="nav-icon">📷</span>
+                <span class="nav-text">Scan</span>
+            </a>
+            <a href="#" class="nav-item" onclick="openHistory()">
+                <span class="nav-icon">📋</span>
+                <span class="nav-text">History</span>
+            </a>
+            <a href="#" class="nav-item" onclick="openProfile()">
+                <span class="nav-icon">👤</span>
+                <span class="nav-text">Profile</span>
+            </a>
+        </div>
+
+        <!-- Loading Modal -->
+        <div id="loadingModal" class="modal">
+            <div class="modal-content">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <h3>Analyzing Ingredients...</h3>
+                    <p>Please wait while we process your image</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Modal -->
+        <div id="resultsModal" class="modal">
+            <div class="modal-content">
+                <button class="close-btn" onclick="closeModal('resultsModal')">&times;</button>
+                <h3>Ingredient Analysis</h3>
+                <div class="results-view">
+                    <div class="ingredient-item">
+                        <div class="ingredient-name">Wheat Flour</div>
+                        <div class="ingredient-desc">Primary ingredient, commonly used in baking</div>
+                        <div class="ingredient-tags">
+                            <span class="tag vegan">Vegan</span>
+                            <span class="tag allergen">Gluten</span>
+                        </div>
+                    </div>
+                    <div class="ingredient-item warning">
+                        <div class="ingredient-name">High Fructose Corn Syrup</div>
+                        <div class="ingredient-desc">Sweetener that may contribute to health issues when consumed in excess</div>
+                        <div class="ingredient-tags">
+                            <span class="tag vegan">Vegan</span>
+                        </div>
+                    </div>
+                    <div class="ingredient-item">
+                        <div class="ingredient-name">Natural Flavors</div>
+                        <div class="ingredient-desc">Flavoring compounds derived from natural sources</div>
+                        <div class="ingredient-tags">
+                            <span class="tag halal">Halal</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile Modal -->
+        <div id="profileModal" class="modal">
+            <div class="modal-content">
+                <button class="close-btn" onclick="closeModal('profileModal')">&times;</button>
+                <h3>User Profile</h3>
+                <div style="text-align: center; padding: 20px;">
+                    <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #4CAF50, #45a049); border-radius: 50%; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; font-size: 36px; color: white;">👤</div>
+                    <h4 style="margin-bottom: 10px;">John Doe</h4>
+                    <p style="color: #666; margin-bottom: 20px;">john.doe@email.com</p>
+                    
+                    <div style="text-align: left;">
+                        <h5 style="margin-bottom: 10px; color: #333;">Dietary Preferences</h5>
+                        <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px;">
+                            <span class="tag vegan">Vegetarian</span>
+                            <span class="tag allergen">Nut Allergy</span>
+                            <span class="tag halal">Halal</span>
+                        </div>
+                        
+                        <button style="width: 100%; padding: 12px; background: linear-gradient(135deg, #4CAF50, #45a049); color: white; border: none; border-radius: 8px; font-size: 16px; cursor: pointer;">Edit Preferences</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // File upload handling
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                showLoading();
+                // Simulate processing time
+                setTimeout(() => {
+                    hideLoading();
+                    showResults();
+                }, 3000);
+            }
+        }
+
+        // Modal functions
+        function showLoading() {
+            document.getElementById('loadingModal').style.display = 'block';
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingModal').style.display = 'none';
+        }
+
+        function showResults() {
+            document.getElementById('resultsModal').style.display = 'block';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // Navigation functions
+        function openScanner() {
+            document.getElementById('fileInput').click();
+        }
+
+        function openHistory() {
+            alert('History feature - shows all past scans with filtering options');
+        }
+
+        function openProfile() {
+            document.getElementById('profileModal').style.display = 'block';
+        }
+
+        function viewScanDetails(item) {
+            alert(`Viewing details for ${item} scan`);
+        }
+
+        // Close modals when clicking outside
+        window.onclick = function(event) {
+            const modals = document.querySelectorAll('.modal');
+            modals.forEach(modal => {
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+        }
+
+        // Navigation active state
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // Add touch feedback for mobile
+        document.querySelectorAll('.scan-area, .action-card, .recent-item').forEach(element => {
+            element.addEventListener('touchstart', function() {
+                this.style.transform = 'scale(0.98)';
+            });
+            
+            element.addEventListener('touchend', function() {
+                this.style.transform = '';
+            });
+        });
+    </script>
+</body>
+</html>

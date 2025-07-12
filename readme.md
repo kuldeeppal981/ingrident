@@ -136,3 +136,19 @@ Ingredient Parser	Node.js + Regex or NLP (compromise, natural)
 Normalization/Mappings	JSON/DB mapping table
 Knowledge API	DB + GPT fallback
 Caching GPT results	Redis or DB with “ingredient → result”
+
+
+https://codepen.io/Test-JJ/pen/OJroJpg
+
+
+
+Guest Mode: 3 free scans daily with limited features
+Sign Up/Sign In: Complete authentication system
+Social Login: Google/Facebook integration points
+Feature Limitations: Premium features locked for guests
+User Profile: Enhanced with authentication state
+Data Persistence: localStorage for user sessions
+Validation: Email/password validation
+Loading States: Spinner animations during auth
+Error Handling: Form validation and error messages
+Notifications: Success/error message system

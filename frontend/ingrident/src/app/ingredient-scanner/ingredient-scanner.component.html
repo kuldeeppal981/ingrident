@@ -1,0 +1,36 @@
+<div class="scanner-container">
+    <h1>Ingredient Scanner</h1>
+  
+    <div class="camera-section">
+      <div class="camera-wrapper">
+        <div id="reader"></div>
+        <img src="assets/switch-camera.png" alt="Switch Camera" class="switch-icon" (click)="switchCamera()" />
+      </div>
+      <button class="scan-btn" (click)="startScanning()" [disabled]="isLoading">
+        {{ isLoading ? 'Scanning...' : 'Start Scanning' }}
+      </button>
+    </div>
+  
+    <div *ngIf="scannedIngredient" class="result-section">
+      <h2>Ingredient Detected: {{ scannedIngredient.name }}</h2>
+      <div class="info-card" *ngIf="scannedIngredient.benefits.length">
+        <h3>✅ Benefits</h3>
+        <ul>
+          <li *ngFor="let benefit of scannedIngredient.benefits">{{ benefit }}</li>
+        </ul>
+      </div>
+      <div class="info-card" *ngIf="scannedIngredient.harmfulEffects.length">
+        <h3>⚠️ Harmful Effects</h3>
+        <ul>
+          <li *ngFor="let effect of scannedIngredient.harmfulEffects">{{ effect }}</li>
+        </ul>
+      </div>
+      <div class="info-card" *ngIf="scannedIngredient.allergens.length">
+        <h3>🚫 Allergens</h3>
+        <ul>
+          <li *ngFor="let allergen of scannedIngredient.allergens">{{ allergen }}</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  
